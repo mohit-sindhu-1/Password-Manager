@@ -19,11 +19,11 @@ const Manager = () => {
     }, [])
 
     const toggleVisibility = () => {
-        if (eyeRef.current.src.includes("public/icons/eye.png")) {
-            eyeRef.current.src = "public/icons/eyecross.png"
+        if (eyeRef.current.src.includes("/icons/eye.png")) {
+            eyeRef.current.src = "/icons/eyecross.png"
             passwordRef.current.type = 'password'
         } else {
-            eyeRef.current.src = "public/icons/eye.png"
+            eyeRef.current.src = "/icons/eye.png"
             passwordRef.current.type = 'text'
         }
     }
@@ -117,7 +117,7 @@ const Manager = () => {
                         <input value={form.username} onChange={handleChange} placeholder='Enter Username' className='lg:w-3/4 w-full border border-cyan-400 px-3 py-1 outline-none text-black rounded-full' type="text" name="username" id="username" />
                         <div className='lg:w-1/4 w-full relative'>
                             <input value={form.password} ref={passwordRef} onChange={handleChange} placeholder='Enter Password' className='w-full border border-cyan-400 px-3 py-1 outline-none text-black rounded-full' type="password" name="password" id="password" />
-                            <img ref={eyeRef} className='absolute right-0 top-0 px-2 py-1.5 cursor-pointer' onClick={toggleVisibility} width={36} src="public/icons/eyecross.png" alt="eye" />
+                            <img ref={eyeRef} className='absolute right-0 top-0 px-2 py-1.5 cursor-pointer' onClick={toggleVisibility} width={36} src="/icons/eyecross.png" alt="eye" />
                         </div>
                     </div>
                 </div>
