@@ -11,7 +11,7 @@ const Navbar = () => {
       </div>
 
       <button className='flex items-center gap-x-3 py-1 px-2 bg-cyan-500 rounded-full text-black'>
-        <img className='w-7' src="/icons/github.svg" alt="github" />
+        <img className='w-7' src="public/icons/github.svg" alt="github" />
         <a href="https://github.com/mohit-sindhu-1/password-manager" target='_blank'><span className='font-bold'>GitHub</span></a>
       </button>
     </nav>
