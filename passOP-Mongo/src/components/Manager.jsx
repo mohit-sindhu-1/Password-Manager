@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { v4 as uuidv4 } from 'uuid'
 
+
 const Manager = () => {
     const eyeRef = useRef()
     const passwordRef = useRef()
@@ -11,30 +12,38 @@ const Manager = () => {
     const [form, setForm] = useState({ url: "", username: "", password: "" })
     const [passwordArray, setPasswordArray] = useState([])
 
+    const getPasswords = async () => {
+        let req = await fetch('http://localhost:3000/')
+        let passwords = await req.json()
+        setPasswordArray(passwords)
+    }
+
     useEffect(() => {
-        let passwords = localStorage.getItem("passwords")
-        if (passwords) {
-            setPasswordArray(JSON.parse(passwords))
-        }
+        getPasswords()
     }, [])
 
     const toggleVisibility = () => {
-        if (eyeRef.current.src.includes("/.icons/eye.png")) {
-            eyeRef.current.src = "./icons/eyecross.png"
+        if (eyeRef.current.src.includes("/icons/eye.png")) {
+            eyeRef.current.src = "/icons/eyecross.png"
             passwordRef.current.type = 'password'
         } else {
-            eyeRef.current.src = "./icons/eye.png"
+            eyeRef.current.src = "/icons/eye.png"
             passwordRef.current.type = 'text'
         }
     }
 
-    const savePassword = () => {
-        setPasswordArray([...passwordArray, { ...form, id: uuidv4() }])
-        localStorage.setItem("passwords", JSON.stringify([...passwordArray, { ...form, id: uuidv4() }]))
-        setForm({ url: "", username: "", password: "" })
+    const savePassword = async () => {
+        if (form.url.length != 0 && form.username.length != 0 && form.password.length != 0) {
+            let res = await fetch('http://localhost:3000/', {
+                method: 'POST', headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...form, id: uuidv4() })
+            })
+            setPasswordArray([...passwordArray, { ...form, id: uuidv4() }])
+            setForm({ url: "", username: "", password: "" })
+        }
     }
 
-    const updatePassword = () => {
+    const updatePassword = async () => {
         document.querySelector("#save").style = "display: flex";
         document.querySelector("#update").style = "display: none";
 
@@ -49,8 +58,11 @@ const Manager = () => {
         })
         let newPasswordArray = [...passwordArray]
         newPasswordArray[index] = { url: form.url, username: form.username, password: form.password, id: editPasswordRef.current.id }
+        let res = await fetch('http://localhost:3000/', {
+            method: 'PUT', headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newPasswordArray[index])
+        })
         setPasswordArray(newPasswordArray)
-        localStorage.setItem("passwords", JSON.stringify(newPasswordArray))
 
         setForm({ url: "", username: "", password: "" })
     }
@@ -80,10 +92,14 @@ const Manager = () => {
         document.querySelector("#update").style = "display: flex";
     }
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         if (confirm('Do you really want to delete this password?')) {
             setPasswordArray(passwordArray.filter(item => item.id !== id))
-            localStorage.setItem("passwords", JSON.stringify(passwordArray.filter(item => item.id !== id)))
+            let res = await fetch('http://localhost:3000/', {
+                method: 'DELETE', headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(passwordArray.filter(item => item.id === id)[0])
+            })
+
         }
     }
 
@@ -117,7 +133,7 @@ const Manager = () => {
                         <input value={form.username} onChange={handleChange} placeholder='Enter Username' className='lg:w-3/4 w-full border border-cyan-400 px-3 py-1 outline-none text-black rounded-full' type="text" name="username" id="username" />
                         <div className='lg:w-1/4 w-full relative'>
                             <input value={form.password} ref={passwordRef} onChange={handleChange} placeholder='Enter Password' className='w-full border border-cyan-400 px-3 py-1 outline-none text-black rounded-full' type="password" name="password" id="password" />
-                            <img ref={eyeRef} className='absolute right-0 top-0 px-2 py-1.5 cursor-pointer' onClick={toggleVisibility} width={36} src="./icons/eyecross.png" alt="eye" />
+                            <img ref={eyeRef} className='absolute right-0 top-0 px-2 py-1.5 cursor-pointer' onClick={toggleVisibility} width={36} src="/icons/eyecross.png" alt="eye" />
                         </div>
                     </div>
                 </div>
