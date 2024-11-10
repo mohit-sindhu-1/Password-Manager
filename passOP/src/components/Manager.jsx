@@ -40,7 +40,7 @@ const Manager = () => {
 
         if (editPasswordRef.current.url == form.url && editPasswordRef.current.username == form.username && editPasswordRef.current.password == form.password) {
             setForm({ url: "", username: "", password: "" })
-            return;
+            return
         }
 
 
